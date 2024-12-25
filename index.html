@@ -212,11 +212,13 @@ footer {
             <h2>Contact Me</h2>
             <p>Feel free to reach out for collaboration or any questions!</p>
             <form id="contact-form">
-                <input type="text" placeholder="Your Name" required>
-                <input type="email" placeholder="Your Email" required>
-                <textarea placeholder="Your Message" required></textarea>
+                <input type="text"  id="username" placeholder="Your Name" required>
+                <input type="email" id="useremail" placeholder="Your Email" required>
+                <input type="tel" id="mobileNumber" placeholder="Your Number" required>
+                <textarea placeholder="Your Message" id="usermessage" required></textarea>
                 <button type="submit" class="btn">Send</button>
             </form>
+            <p id="messageDiv" class="mt-3"></p>
         </div>
     </section>
 
@@ -225,7 +227,7 @@ footer {
             <p>© 2024 Deepak Yadav. All rights reserved.</p>
         </div>
     </footer>
-
+ <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="scripts/main.js"></script>
     <script>
         // Smooth scrolling for navigation links
@@ -240,11 +242,53 @@ footer {
         });
 
         // Contact form submission (stub)
-        document.getElementById('contact-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            alert('Thank you for your message!');
-        });
+        // document.getElementById('contact-form').addEventListener('submit', function (e) {
+        //     e.preventDefault();
+        //     alert('Thank you for your message!');
+        // });
 
+         // Initialize EmailJS
+        emailjs.init('IgLuSwfe3xrtWYmbp'); // Replace with your EmailJS User ID
+
+        const unsubscribeForm = document.getElementById('contact-form');
+        const messageDiv = document.getElementById('messageDiv');
+
+        unsubscribeForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const mobileNumber = document.getElementById('mobileNumber').value;
+             const username = document.getElementById('username').value;
+             const useremail = document.getElementById('useremail').value;
+             const usermessage = document.getElementById('usermessage').value;
+           // console.log(username,useremail,usermessage,mobileNumber);
+            // return;
+
+            if (!mobileNumber) {
+                messageDiv.textContent = "Please enter a mobile number.";
+                messageDiv.classList.add('text-danger');
+                return;
+            }
+
+            // Send the email using EmailJS
+            emailjs.send('service_tjstv1a', 'template_373gxy5', {
+                
+                to_name: 'Deepak Yadav Git',  // Replace with actual recipient name
+                from_name: `Name:-${username},Email:-${useremail} ` ,    // Replace with actual sender name
+                message: usermessage,
+                mobile_number: mobileNumber // Add the mobile number
+            })
+            .then(response => {
+                messageDiv.textContent = "Thank you for your message! I will get back to you soon.";
+                messageDiv.classList.remove('text-danger');
+                messageDiv.classList.add('text-success');
+            })
+            .catch(error => {
+                console.error('EmailJS Error:', error);
+                messageDiv.textContent = "An error occurred. Please try again later.";
+                messageDiv.classList.remove('text-success');
+                messageDiv.classList.add('text-danger');
+            });
+        });
     </script>
 </body>
 </html>
